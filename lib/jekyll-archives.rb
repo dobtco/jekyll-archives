@@ -81,7 +81,7 @@ module Jekyll
       end
 
       def read_authors
-        if enabled? "authors"
+        if enabled? "author"
           authors.each do |title, posts|
             @archives << Archive.new(@site, title, "author", posts)
           end
