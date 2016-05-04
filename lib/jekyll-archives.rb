@@ -25,7 +25,8 @@ module Jekyll
           'month' => '/:year/:month/',
           'day' => '/:year/:month/:day/',
           'tag' => '/tag/:name/',
-          'category' => '/category/:name/'
+          'category' => '/category/:name/',
+          'author' => '/author/:name/'
         }
       }
 
@@ -59,6 +60,7 @@ module Jekyll
       def read
         read_tags
         read_categories
+        read_authors
         read_dates
       end
 
@@ -74,6 +76,14 @@ module Jekyll
         if enabled? "categories"
           categories.each do |title, posts|
             @archives << Archive.new(@site, title, "category", posts)
+          end
+        end
+      end
+
+      def read_authors
+        if enabled? "authors"
+          authors.each do |title, posts|
+            @archives << Archive.new(@site, title, "author", posts)
           end
         end
       end
@@ -120,12 +130,16 @@ module Jekyll
         @site.post_attr_hash('categories')
       end
 
+      def authors
+        @site.post_attr_hash('author')
+      end
+
       # Custom `post_attr_hash` method for years
       def years
         hash = Hash.new { |h, key| h[key] = [] }
 
         # In Jekyll 3, Collection#each should be called on the #docs array directly.
-        if Jekyll::VERSION >= '3.0.0' 
+        if Jekyll::VERSION >= '3.0.0'
           @posts.docs.each { |p| hash[p.date.strftime("%Y")] << p }
         else
           @posts.each { |p| hash[p.date.strftime("%Y")] << p }
