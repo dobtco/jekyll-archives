@@ -131,7 +131,10 @@ module Jekyll
       end
 
       def authors
-        @site.post_attr_hash('author')
+        hash = Hash.new { |h, key| h[key] = [] }
+        @posts.docs.each { |p| hash[p.data['author']] << p }
+        hash.values.each { |posts| posts.sort!.reverse! }
+        hash
       end
 
       # Custom `post_attr_hash` method for years
